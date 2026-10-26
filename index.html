@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameZone — Play. Level Up.</title>
+<style>
+:root{--bg:#090b16;--panel:#13182b;--panel2:#1b2240;--text:#f5f7ff;--muted:#aab2d2;--a:#8b5cf6;--b:#22d3ee;--pink:#f472b6;--green:#34d399}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#222052 0%,var(--bg) 48%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
+header{max-width:1150px;margin:auto;padding:24px 22px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.logo{font-weight:900;font-size:1.4rem;letter-spacing:.5px}.logo span{color:var(--b)}.badge{font-size:.82rem;color:#d8d2ff;background:#28224a;border:1px solid #4d4386;padding:8px 12px;border-radius:999px}
+main{max-width:1150px;margin:auto;padding:10px 22px 60px}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center;padding:34px 0 30px}
+.eyebrow{color:var(--b);text-transform:uppercase;font-size:.8rem;font-weight:800;letter-spacing:2px}
+h1{font-size:clamp(2.6rem,6vw,4.6rem);line-height:1.02;margin:13px 0 18px;letter-spacing:-2px}h1 em{font-style:normal;color:var(--b)}
+.hero p{color:var(--muted);font-size:1.08rem;line-height:1.7;max-width:580px}
+.hero-art{border:1px solid #34345e;background:linear-gradient(135deg,#211b4c,#122c46);border-radius:28px;min-height:260px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.orb{font-size:7rem;filter:drop-shadow(0 0 30px #8b5cf6);animation:float 3s ease-in-out infinite}.spark{position:absolute;font-size:2rem;animation:float 4s ease-in-out infinite}.s1{top:25px;left:32px}.s2{bottom:30px;right:35px;animation-delay:1s}.s3{top:42px;right:42px;animation-delay:1.5s}
+@keyframes float{50%{transform:translateY(-12px) rotate(4deg)}}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:26px 0 18px}.section-head h2{font-size:1.65rem;margin:0}.section-head p{color:var(--muted);margin:7px 0 0}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid #2d3559;border-radius:20px;padding:20px;min-height:220px;display:flex;flex-direction:column;transition:.2s;cursor:pointer}.card:hover{transform:translateY(-5px);border-color:var(--a);box-shadow:0 14px 40px #0004}.icon{font-size:2.6rem;margin-bottom:15px}.card h3{margin:0 0 8px}.card p{color:var(--muted);line-height:1.5;font-size:.92rem;margin:0 0 18px}.play{margin-top:auto;border:0;border-radius:11px;padding:11px 13px;background:linear-gradient(90deg,var(--a),#5b7cfa);color:white;font-weight:800;cursor:pointer}
+.panel{display:none;background:#10152a;border:1px solid #343a60;border-radius:22px;margin-top:25px;padding:22px}.panel.active{display:block}.panel-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}.panel h2{margin:0}.close{background:#252c4a;color:white;border:1px solid #41496d;padding:8px 12px;border-radius:9px;cursor:pointer}
+.game-area{min-height:230px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center}.status{color:var(--muted);min-height:24px}
+.board{display:grid;gap:8px}.ttt{grid-template-columns:repeat(3,84px)}.ttt button{height:84px;font-size:2rem;font-weight:900}.cell{border:1px solid #40496e;border-radius:14px;background:#1c2340;color:white;cursor:pointer}
+.memory{grid-template-columns:repeat(4,64px)}.memory button{height:64px;font-size:1.65rem}
+.primary{background:linear-gradient(90deg,var(--a),#5b7cfa);color:white;border:0;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer}
+#snakeCanvas{max-width:100%;border:2px solid #41496d;border-radius:12px;background:#080d1c}
+.bigscore{font-size:2rem;font-weight:900;color:var(--b)}
+footer{text-align:center;color:#8992b7;border-top:1px solid #242a46;padding:24px;margin-top:35px;font-size:.9rem}
+@media(max-width:850px){.cards{grid-template-columns:repeat(2,1fr)}.hero{grid-template-columns:1fr}.hero-art{min-height:190px}.orb{font-size:5rem}}
+@media(max-width:480px){header{padding:18px 15px}.badge{font-size:.72rem}main{padding:0 15px 40px}.cards{grid-template-columns:1fr}.card{min-height:180px}.ttt{grid-template-columns:repeat(3,70px)}.ttt button{height:70px}.memory{grid-template-columns:repeat(4,56px)}.memory button{height:56px}}
+
+.name-banner{margin:12px 0 34px;padding:27px 18px;text-align:center;border:1px solid #49417e;border-radius:24px;background:linear-gradient(120deg,#241b50,#102c43 55%,#281a43);box-shadow:0 18px 50px #0004;position:relative;overflow:hidden}
+.name-kicker{font-size:.78rem;letter-spacing:5px;font-weight:800;color:var(--b);margin-bottom:8px}
+.name-title{font-size:clamp(2.4rem,7vw,5rem);font-weight:1000;letter-spacing:2px;line-height:1.05;text-shadow:0 0 24px #8b5cf677}
+.name-title span{color:var(--b)}
+.name-subtitle{margin-top:12px;color:#d4d9f5;font-size:.9rem;letter-spacing:2px;font-weight:700}
+
+</style>
+</head>
+<body>
+<header><div class="logo">🎮 Game<span>Zone</span></div><div class="badge">✨ Free browser games</div></header>
+<main>
+<section class="hero">
+<div><div class="eyebrow">Your mini arcade</div><h1>Play. Have fun.<br><em>Level up.</em></h1><p>Welcome to GameZone! Apne browser mein hi chhote games khelo — koi download ya account zaroori nahi. Apna favourite game chuno aur shuru ho jao.</p></div>
+<div class="hero-art"><span class="spark s1">✦</span><span class="spark s2">⚡</span><span class="spark s3">✧</span><div class="orb">🕹️</div></div>
+</section>
+
+<section class="name-banner" aria-label="Gaming name">
+  <div class="name-kicker">WELCOME TO</div>
+  <div class="name-title">LAXMI <span>GAMING</span></div>
+  <div class="name-subtitle">🎮 PLAY • COMPETE • HAVE FUN ⚡</div>
+</section>
+
+<div class="section-head"><div><h2>Choose your game</h2><p>Pick a game and start playing.</p></div></div>
+<section class="cards">
+<article class="card" onclick="openGame('snake')"><div class="icon">🐍</div><h3>Snake Dash</h3><p>Food collect karo aur snake ko grow karo. Walls se bachna!</p><button class="play">Play Snake →</button></article>
+<article class="card" onclick="openGame('ttt')"><div class="icon">❌</div><h3>Tic-Tac-Toe</h3><p>Classic X aur O game. Computer ke against apni strategy test karo.</p><button class="play">Play Tic-Tac-Toe →</button></article>
+<article class="card" onclick="openGame('memory')"><div class="icon">🧠</div><h3>Memory Match</h3><p>Cards flip karo aur matching pairs dhoondo.</p><button class="play">Play Memory →</button></article>
+<article class="card" onclick="openGame('click')"><div class="icon">⚡</div><h3>Click Rush</h3><p>10 seconds mein jitne ho sake targets click karo!</p><button class="play">Play Click Rush →</button></article>
+</section>
+<section id="gamePanel" class="panel">
+<div class="panel-top"><h2 id="gameTitle">Game</h2><button class="close" onclick="closeGame()">✕ Close</button></div>
+<div id="gameArea" class="game-area"></div>
+</section>
+</main>
+<footer>Made for fun 💜 GameZone runs in your browser. Your scores stay on this device.</footer>
+<script>
+const panel=document.getElementById('gamePanel'),area=document.getElementById('gameArea'),title=document.getElementById('gameTitle');let snakeTimer=null,clickTimer=null;
+function clearTimers(){if(snakeTimer)clearInterval(snakeTimer);if(clickTimer)clearInterval(clickTimer);snakeTimer=clickTimer=null}
+function openGame(name){clearTimers();panel.classList.add('active');panel.scrollIntoView({behavior:'smooth',block:'start'});if(name==='snake')snakeGame();if(name==='ttt')tttGame();if(name==='memory')memoryGame();if(name==='click')clickGame()}
+function closeGame(){clearTimers();panel.classList.remove('active');area.innerHTML=''}
+function snakeGame(){title.textContent='🐍 Snake Dash';area.innerHTML=`<div class="status">Arrow keys ya WASD se move karo. Mobile par neeche buttons use karo.</div><canvas id="snakeCanvas" width="320" height="320"></canvas><div class="bigscore">Score: <span id="snakeScore">0</span></div><div style="display:grid;grid-template-columns:repeat(3,48px);gap:5px"><span></span><button class="cell" onclick="setDir(0,-1)">⬆️</button><span></span><button class="cell" onclick="setDir(-1,0)">⬅️</button><button class="cell" onclick="setDir(0,1)">⬇️</button><button class="cell" onclick="setDir(1,0)">➡️</button></div><button class="primary" onclick="snakeGame()">Restart</button>`;let c=document.getElementById('snakeCanvas'),ctx=c.getContext('2d'),snake=[{x:8,y:8},{x:7,y:8},{x:6,y:8}],food={x:12,y:10},dir={x:1,y:0},score=0,over=false;window.setDir=(x,y)=>{if(x!==-dir.x||y!==-dir.y)dir={x,y}};window.onkeydown=e=>{let k=e.key.toLowerCase();if(k==='arrowup'||k==='w')setDir(0,-1);if(k==='arrowdown'||k==='s')setDir(0,1);if(k==='arrowleft'||k==='a')setDir(-1,0);if(k==='arrowright'||k==='d')setDir(1,0)};function draw(){ctx.fillStyle='#080d1c';ctx.fillRect(0,0,320,320);ctx.strokeStyle='#171f37';for(let i=0;i<=320;i+=20){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,320);ctx.stroke();ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(320,i);ctx.stroke()}ctx.fillStyle='#f472b6';ctx.fillRect(food.x*20+2,food.y*20+2,16,16);snake.forEach((p,i)=>{ctx.fillStyle=i?'#22d3ee':'#a78bfa';ctx.fillRect(p.x*20+2,p.y*20+2,16,16)})}snakeTimer=setInterval(()=>{if(over)return;let head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};if(head.x<0||head.x>15||head.y<0||head.y>15||snake.some(p=>p.x===head.x&&p.y===head.y)){over=true;document.querySelector('.status').textContent='Game over! Restart dabakar phir try karo.';clearInterval(snakeTimer);return}snake.unshift(head);if(head.x===food.x&&head.y===food.y){score++;document.getElementById('snakeScore').textContent=score;food={x:Math.floor(Math.random()*16),y:Math.floor(Math.random()*16)}}else snake.pop();draw()},140);draw()}
+function tttGame(){title.textContent='❌ Tic-Tac-Toe';area.innerHTML='<div class="status" id="tttStatus">Aap X ho — apni chaal chuno!</div><div class="board ttt" id="tttBoard"></div><button class="primary" onclick="tttGame()">Restart</button>';let b=Array(9).fill(''),done=false,board=document.getElementById('tttBoard');function win(p){return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(line=>line.every(i=>b[i]===p))}function status(s){document.getElementById('tttStatus').textContent=s}function render(){board.innerHTML='';b.forEach((v,i)=>{let btn=document.createElement('button');btn.className='cell';btn.textContent=v;btn.onclick=()=>move(i);board.appendChild(btn)})}function move(i){if(done||b[i])return;b[i]='X';render();if(win('X')){done=true;status('Aap jeet gaye! 🎉');return}if(b.every(Boolean)){done=true;status('Draw! Phir se khelo.');return}let empt=b.map((v,i)=>v?null:i).filter(v=>v!==null);let pick=empt.find(i=>{b[i]='O';let w=win('O');b[i]='';return w});if(pick===undefined)pick=empt.find(i=>{b[i]='X';let w=win('X');b[i]='';return w});if(pick===undefined)pick=empt[Math.floor(Math.random()*empt.length)];b[pick]='O';render();if(win('O')){done=true;status('Computer jeet gaya. Next time!')}else if(b.every(Boolean)){done=true;status('Draw! Phir se khelo.')}}render()}
+function memoryGame(){title.textContent='🧠 Memory Match';let icons=['🍒','🚀','🐱','⭐','🍉','🎲','🐸','💎'];let cards=[...icons,...icons].sort(()=>Math.random()-.5),open=[],matched=[],moves=0;area.innerHTML='<div class="status" id="memStatus">Matching pairs dhoondo!</div><div class="status">Moves: <b id="memMoves">0</b></div><div class="board memory" id="memBoard"></div><button class="primary" onclick="memoryGame()">Restart</button>';let board=document.getElementById('memBoard');cards.forEach((icon,i)=>{let btn=document.createElement('button');btn.className='cell';btn.textContent='?';btn.onclick=()=>{if(open.includes(i)||matched.includes(i)||open.length===2)return;open.push(i);btn.textContent=icon;if(open.length===2){moves++;document.getElementById('memMoves').textContent=moves;let [a,b]=open;if(cards[a]===cards[b]){matched.push(a,b);open=[];if(matched.length===cards.length)document.getElementById('memStatus').textContent='You win! 🎉 Moves: '+moves}else setTimeout(()=>{if(!document.getElementById('memBoard'))return;[a,b].forEach(j=>{if(!matched.includes(j))board.children[j].textContent='?' });open=[]},650)}};board.appendChild(btn)})}
+function clickGame(){title.textContent='⚡ Click Rush';area.innerHTML='<div class="bigscore">Score: <span id="clickScore">0</span></div><div class="status" id="clickStatus">Start dabao, phir 10 seconds mein targets click karo!</div><button class="primary" id="clickStart">Start 10s challenge</button><button id="target" class="primary" style="display:none;font-size:1.4rem;padding:22px 30px">🎯 CLICK ME!</button>';let score=0,left=10;document.getElementById('clickStart').onclick=()=>{score=0;left=10;document.getElementById('clickScore').textContent=score;document.getElementById('clickStart').disabled=true;let t=document.getElementById('target');t.style.display='block';document.getElementById('clickStatus').textContent='Time left: 10s';t.onclick=()=>{if(left>0){score++;document.getElementById('clickScore').textContent=score;t.style.transform=`translate(${Math.random()*60-30}px,${Math.random()*30-15}px)`}};clickTimer=setInterval(()=>{left--;document.getElementById('clickStatus').textContent='Time left: '+left+'s';if(left<=0){clearInterval(clickTimer);clickTimer=null;t.style.display='none';document.getElementById('clickStatus').textContent='Time up! Your score: '+score;document.getElementById('clickStart').disabled=false}},1000)}}
+</script>
+</body></html>
